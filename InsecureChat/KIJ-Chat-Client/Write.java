@@ -30,13 +30,14 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Write implements Runnable {
     
-	private Scanner chat;
-        private PrintWriter out;
+	private final Scanner chat;
+        private final PrintWriter out;
         boolean keepGoing = true;
         ArrayList<String> log;
         static String IV = "AAAAAAAAAAAAAAAA";
         //static String plaintext ; /*Note null padding*/
         static String encryptionKey = "0123456789abcdef";
+        String kalimat ;
 	
 	public Write(Scanner chat, PrintWriter out, ArrayList<String> log)
 	{
@@ -51,13 +52,49 @@ public class Write implements Runnable {
 		try
 		{
 			while (keepGoing)//WHILE THE PROGRAM IS RUNNING
-			{						
+			{
+                            
 				String input = chat.nextLine();	//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
                                 char[] a= input.toCharArray();
-                                //System.out.println(a[1]);
-                                
-				out.println(input);//SEND IT TO THE SERVER
-				out.flush();//FLUSH THE STREAM
+                                if (input.split(" ")[0].toLowerCase().equals("login") == true)
+                                { 
+                                    out.println(input);//SEND IT TO THE SERVER
+                                    out.flush();//FLUSH THE STREAM
+                                }
+                                else if (input.split(" ")[0].toLowerCase().equals("logout") == true)
+                                { 
+                                    out.println(input);//SEND IT TO THE SERVER
+                                    out.flush();//FLUSH THE STREAM
+                                }
+                                else if (input.split(" ")[0].toLowerCase().equals("cg") == true)
+                                { 
+                                    out.println(input);//SEND IT TO THE SERVER
+                                    out.flush();//FLUSH THE STREAM
+                                }
+                                else if (input.split(" ")[0].toLowerCase().equals("bm") == true)
+                                {
+                                    String[] parts= input.split(" ");
+                                    int byk=parts.length;
+                                    for (int i=1;i<byk;i++)
+                                    {
+                                        kalimat = kalimat.concat(parts[i]);
+                                    }
+                                    byte[] cipher = encrypt(kalimat, encryptionKey);
+                                    out.println(cipher);//SEND IT TO THE SERVER
+                                    out.flush();//FLUSH THE STREAM
+                                }
+                                else 
+                                {
+                                    String[] parts= input.split(" ");
+                                    int byk=parts.length;
+                                    for (int i=2;i<byk;i++)
+                                    {
+                                        kalimat = kalimat.concat(parts[i]);
+                                    }
+                                    byte[] cipher = encrypt(kalimat, encryptionKey);
+                                    out.println(cipher);//SEND IT TO THE SERVER
+                                    out.flush();//FLUSH THE STREAM
+                                } 
                                 
                                 if (input.contains("logout")) {
                                     if (log.contains("true"))
@@ -68,7 +105,6 @@ public class Write implements Runnable {
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();//MOST LIKELY WONT BE AN ERROR, GOOD PRACTICE TO CATCH THOUGH
 		} 
 	}
     public static byte[] encrypt(String plainText, String encryptionKey) throws Exception {
