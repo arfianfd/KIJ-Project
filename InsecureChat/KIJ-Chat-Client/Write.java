@@ -37,7 +37,7 @@ public class Write implements Runnable {
         static String IV = "AAAAAAAAAAAAAAAA";
         //static String plaintext ; /*Note null padding*/
         static String encryptionKey = "0123456789abcdef";
-        String kalimat ;
+        
 	
 	public Write(Scanner chat, PrintWriter out, ArrayList<String> log)
 	{
@@ -49,11 +49,14 @@ public class Write implements Runnable {
 	@Override
 	public void run()//INHERIT THE RUN METHOD FROM THE Runnable INTERFACE
 	{
+            
 		try
 		{
 			while (keepGoing)//WHILE THE PROGRAM IS RUNNING
 			{
-                            
+                                String kalimat="";
+                                String b2="";
+                                String strtosend="";
 				String input = chat.nextLine();	//SET NEW VARIABLE input TO THE VALUE OF WHAT THE CLIENT TYPED IN
                                 char[] a= input.toCharArray();
                                 if (input.split(" ")[0].toLowerCase().equals("login") == true)
@@ -77,22 +80,33 @@ public class Write implements Runnable {
                                     int byk=parts.length;
                                     for (int i=1;i<byk;i++)
                                     {
-                                        kalimat = kalimat.concat(parts[i]);
+                                        kalimat = kalimat.concat(parts[i]+" ");
                                     }
                                     byte[] cipher = encrypt(kalimat, encryptionKey);
-                                    out.println(cipher);//SEND IT TO THE SERVER
+                                    for(int i=0;i<cipher.length;i++){
+                                        strtosend+=(char)cipher[i];
+                                      }//kalimat di b2 nantinya diganti dengan str to send
+                                    
+                                    b2=b2.concat(parts[0]+" "+strtosend+" "+Integer.toString(cipher.length));
+                                    out.println(b2);//SEND IT TO THE SERVER
                                     out.flush();//FLUSH THE STREAM
                                 }
-                                else 
+                                else if(input.split(" ")[0].toLowerCase().equals("pm") == true)
                                 {
                                     String[] parts= input.split(" ");
                                     int byk=parts.length;
                                     for (int i=2;i<byk;i++)
                                     {
-                                        kalimat = kalimat.concat(parts[i]);
+                                        kalimat = kalimat.concat(parts[i]+" ");
                                     }
                                     byte[] cipher = encrypt(kalimat, encryptionKey);
-                                    out.println(cipher);//SEND IT TO THE SERVER
+                                     for(int i=0;i<cipher.length;i++){
+                                        strtosend+=(char)cipher[i];
+                                      }//kalimat di b2 nantinya diganti dengan str to send
+                                    
+                                    b2=b2.concat(parts[0]+" "+parts[1]+" "+strtosend+" "+Integer.toString(cipher.length));
+                                    //System.out.println(b2);
+                                    out.println(b2);//SEND IT TO THE SERVER
                                     out.flush();//FLUSH THE STREAM
                                 } 
                                 
