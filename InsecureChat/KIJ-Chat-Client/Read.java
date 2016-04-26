@@ -38,6 +38,9 @@ public class Read implements Runnable {
   static String encryptionKey = "0123456789abcdef";
   String[] kata;
   String pesan="";
+  int a=0;
+  int x=0;
+  int stop=0;
   
 	
 	public Read(Scanner in, ArrayList<String> log)
@@ -52,20 +55,72 @@ public class Read implements Runnable {
 		try
 		{
 			while (keepGoing)//WHILE THE PROGRAM IS RUNNING
-			{						
+			{	byte[] cipher2;	
+                                int panjangcipher=0;
+                                String decrypted="";
+                                String pesantampil="";
 				if(this.in.hasNext()) {
                                                                    //IF THE SERVER SENT US SOMETHING
                                         input = this.in.nextLine();
                                         
                                         int x=input.length();
                                         kata= input.split(" ");
-                                        //System.out.println(kata.length);
+                                        //panjangcipher=Integer.valueOf(kata[kata.length-1]);
+                                        //System.out.println(kata[kata.length-1]);
+                                      
+                                            if(kata[0].contains(":")){
+                                            panjangcipher +=Integer.valueOf(kata[kata.length-1]);
+                                            cipher2=new byte[panjangcipher];
+                                            for(int i=1; i<kata.length-1; i++){
+                                            pesan=pesan.concat(kata[i]);
+                                             }
+                                            for(int i=0;i<panjangcipher;i++){
+                                            cipher2[i]=(byte)pesan.charAt(i);
+                                            }
+                                            decrypted = decrypt(cipher2, encryptionKey);
+                                             pesantampil=pesantampil.concat(kata[0]+" "+decrypted);
+                                            }
+                                            else if(kata[1].contains(":")){
+                                            panjangcipher +=Integer.valueOf(kata[kata.length-1]);
+                                            cipher2=new byte[panjangcipher];
+                                            for(int i=2; i<kata.length-1; i++){
+                                            pesan=pesan.concat(kata[i]);
+                                             }  
+                                            for(int i=0;i<panjangcipher;i++){
+                                            cipher2[i]=(byte)pesan.charAt(i);//di read.java
+      
+                                             }
+                                            decrypted = decrypt(cipher2, encryptionKey);
+                                            pesantampil=pesantampil.concat(kata[0]+" "+kata[1]+" "+decrypted);
+                                            }
+                                            else{
+                                            pesantampil=input;
+                                            }
+                                            
+                                            
+                                            
+                                               //System.out.println("panjangcipher:  "+panjangcipher);
+                                               //System.out.println("pesan ter decrypt:  "+decrypted);
+                                           
+                                          
+                                           
                                         
-                                       for(int i=1; i<kata.length; i++)
-                                           pesan=pesan.concat(kata[i]);
+                                        
+                                       // System.out.println(a);
+                                         //System.out.println(x);
+                                        // stop=0;
+                                        
+                                       /*for(int i=1; i<kata.length; i++){
+                                           if(kata[i].contains(":")){
+                                             pesan=pesan.concat(kata[i+1]);
+                                           }
+                                           else{
+                                           System.out.println(input);
+                                           }                          
+                                            }
                                           // System.out.println(kata[i]);
                                           
-                                        System.out.println(pesan);
+                                        System.out.print("pesan:  "+pesan);*/
                                           
                                             
                                             
@@ -80,7 +135,7 @@ public class Read implements Runnable {
                                         //String message2 = String.valueOf(message);
                                         //System.out.println(message2);
                                             
-					System.out.println(input);//PRINT IT OUT
+					System.out.println(pesantampil);//PRINT IT OUT
                                         if (input.split(" ")[0].toLowerCase().equals("success")) {
                                             if (input.split(" ")[1].toLowerCase().equals("logout")) {
                                                 keepGoing = false;
@@ -91,8 +146,10 @@ public class Read implements Runnable {
                                         }
                                         
                                 }
+                                 pesan="";
                                 
 			}
+                       
 		}
 		catch (Exception e)
 		{
